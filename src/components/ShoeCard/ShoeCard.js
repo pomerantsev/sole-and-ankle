@@ -36,14 +36,35 @@ const ShoeCard = ({
       <Wrapper>
         <ImageWrapper>
           <Image alt="" src={imageSrc} />
+          {(() => {
+            switch (variant) {
+              case 'on-sale':
+                return <Tag style={{'--bg-color': COLORS.primary}}>Sale</Tag>;
+              case 'new-release':
+                return <Tag style={{'--bg-color': COLORS.secondary}}>Just Released!</Tag>;
+              default:
+                return null;
+            }
+          })()}
         </ImageWrapper>
         <Spacer size={12} />
         <Row>
           <Name>{name}</Name>
-          <Price>{formatPrice(price)}</Price>
+          <Price
+            style={{'--color': salePrice ? COLORS.gray[700] : 'inherit'}}
+          >
+            {salePrice ?
+              <s>{formatPrice(price)}</s> :
+              formatPrice(price)
+            }
+          </Price>
         </Row>
         <Row>
           <ColorInfo>{pluralize('Color', numOfColors)}</ColorInfo>
+          {salePrice ?
+            <SalePrice>{formatPrice(salePrice)}</SalePrice> :
+            null
+          }
         </Row>
       </Wrapper>
     </Link>
@@ -61,10 +82,27 @@ const ImageWrapper = styled.div`
   position: relative;
 `;
 
-const Image = styled.img``;
+const Image = styled.img`
+  display: block;
+  width: 100%;
+`;
+
+const Tag = styled.div`
+  position: absolute;
+  top: 12px;
+  right: -4px;
+  color: ${COLORS.white};
+  background-color: var(--bg-color);
+  padding: 6px 12px;
+  border-radius: 2px;
+  font-weight: 700;
+`;
 
 const Row = styled.div`
   font-size: 1rem;
+  color: ${COLORS.gray[900]};
+  display: flex;
+  justify-content: space-between;
 `;
 
 const Name = styled.h3`
@@ -72,7 +110,9 @@ const Name = styled.h3`
   color: ${COLORS.gray[900]};
 `;
 
-const Price = styled.span``;
+const Price = styled.span`
+  color: var(--color);
+`;
 
 const ColorInfo = styled.p`
   color: ${COLORS.gray[700]};
